@@ -38,7 +38,6 @@ public class UserController : ControllerBase
         return user;
     }
 
-
     [HttpPut("by-id/{id}")]
     public async Task<IActionResult> UpdateUserById(string id, [FromBody] User userUpdate)
     {
@@ -82,11 +81,11 @@ public class UserController : ControllerBase
         return NoContent();
     }
 
-
-    [HttpPost("verify-password")]
-    public async Task<IActionResult> VerifyPassword([FromBody] VerifyPasswordRequest request)
+    // Endpoint to verify the password using the user ID
+    [HttpPost("verify-password/{id}")]
+    public async Task<IActionResult> VerifyPassword(string id, [FromBody] VerifyPasswordRequest request)
     {
-        var user = await _context.Users.Find(u => u.Username == request.Username).FirstOrDefaultAsync();
+        var user = await _context.Users.Find(u => u.Id == id).FirstOrDefaultAsync();
 
         if (user == null || user.Password != request.CurrentPassword)
         {
@@ -96,10 +95,11 @@ public class UserController : ControllerBase
         return Ok(new { isValid = true });
     }
 
-    [HttpPost("change-password")]
-    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
+    // Endpoint to change the password using the user ID
+    [HttpPost("change-password/{id}")]
+    public async Task<IActionResult> ChangePassword(string id, [FromBody] ChangePasswordRequest request)
     {
-        var user = await _context.Users.Find(u => u.Username == request.Username).FirstOrDefaultAsync();
+        var user = await _context.Users.Find(u => u.Id == id).FirstOrDefaultAsync();
 
         if (user == null || user.Password != request.CurrentPassword)
         {
@@ -108,7 +108,7 @@ public class UserController : ControllerBase
 
         var updateDefinition = Builders<User>.Update.Set(u => u.Password, request.NewPassword);
 
-        var result = await _context.Users.UpdateOneAsync(u => u.Username == request.Username, updateDefinition);
+        var result = await _context.Users.UpdateOneAsync(u => u.Id == id, updateDefinition);
 
         if (result.ModifiedCount == 0)
         {
@@ -120,13 +120,11 @@ public class UserController : ControllerBase
 
     public class VerifyPasswordRequest
     {
-        public string Username { get; set; }
         public string CurrentPassword { get; set; }
     }
 
     public class ChangePasswordRequest
     {
-        public string Username { get; set; }
         public string CurrentPassword { get; set; }
         public string NewPassword { get; set; }
     }
