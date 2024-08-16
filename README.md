@@ -17,3 +17,6 @@ luego el id del usuario se tiene que cambiar en
 /frontend/src/components/EditFile.js (linea 29)
 /frontend/src/components/UserForm.js (linea 23)
 
+/frontend/src/components/EditPassword.js (linea 32, 42)
+
+
