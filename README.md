@@ -19,4 +19,8 @@ luego el id del usuario se tiene que cambiar en
 
 /frontend/src/components/EditPassword.js (linea 32, 42)
 
+Iniciar el backend 
+    dotnet run
 
+Iniciar el frontend
+    npm start
